@@ -14,3 +14,7 @@ Creating the best, most secure chat app I can using only Socket.io, Express, and
 -**Add a feature for private chats**
 
 -**Clean up the UI**
+
+### **Note:**
+
+The initial boilerplate for this was heavily based off https://socket.io/get-started/chat but I am making many changes on it to make it my own project
