@@ -5,8 +5,12 @@
 Creating the best, most secure chat app I can using only Socket.io, Express, and Node.js. This project is meant to practice my skills in Backend Development, Specifically Sockets
 
 ### **TODO's**
--Add Authentication
--Set up on a server
--Add a feature to save chats
--Add a feature for private chats
--Clean up the UI
+-**Add Authentication**
+
+-**Set up on a server**
+
+-**Add a feature to save chats**
+
+-**Add a feature for private chats**
+
+-**Clean up the UI**
