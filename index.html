@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #input:focus { outline: none; }
+      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages > li { padding: 0.5rem 1rem; display:flex; flex-direction:column;}
+      .self {
+        align-items: flex-end;
+      }
+
+      .other {
+        align-items: flex-start;
+      }
+        .server {
+            align-items: center;
+        }
+
+      .bubble {
+        display: inline-block;
+        max-width: 60%;
+        padding: 0.5rem 1rem;
+        border-radius: 1rem;
+        word-wrap: break-word;
+       }
+
+        .self .bubble {
+         background: #007bff;
+         color: white;
+         border-bottom-right-radius: 0;
+        }
+
+        .other .bubble {
+         background: #e5e5ea;
+         color: black;
+         border-bottom-left-radius: 0;
+        }
+        .server .bubble {
+         background: #097969;
+         color: white;
+         border-bottom-left-radius: 1rem;
+        }
+        .messageUser {
+            font-size: 0.75rem;
+            color: #555;
+            margin-bottom: 0.25rem;
+            margin-left: 0.5rem;
+        }
+        .self .messageUser {
+            text-align: right;
+            margin-right: 0.5rem;
+        }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        //asks user for their nickname and sends it to server
+        let nickname = localStorage.getItem('nickname');
+
+        if(!nickname) {
+            nickname = prompt('What is your nickname?');
+            localStorage.setItem('nickname', nickname);
+        }
+        //sets up client side socket (the one the server is interacting with)
+        var socket = io();
+        //gets the messages from the form
+        var form = document.getElementById('form');
+        var input = document.getElementById('input');
+        //sends new nickname to the server
+        socket.emit('newnick', nickname)
+
+        form.addEventListener('submit', (event) => {
+            //prevents the form from submitting when the page is refreshed
+            event.preventDefault();
+            //if the form is submitted and the input is not empty
+            if(input.value) {
+                socket.emit('chat message', input.value);
+                input.value = "";
+            }
+        })
+        //gets the messages from the other socket and adds it to a list element
+        socket.on('chat message', (message) => {
+            const wrapper = document.createElement('li');
+            const bubble = document.createElement('div');
+            if(message.includes(':')) {
+                //splits the message into the name and the rest, if there is a colon in the message
+                const [name, ...textParts] = message.split(':');
+                message = textParts.join(':').trim();
+
+                const messageUser = document.createElement('div');
+                //checks for if its the client
+                if(name === nickname) {
+                    wrapper.classList.add("self");
+                } else {
+                    wrapper.classList.add("other");
+                }
+                messageUser.classList.add('messageUser');
+                bubble.classList.add('bubble');
+
+                bubble.textContent = message;
+                messageUser.textContent = name;
+                wrapper.appendChild(messageUser);
+            } else {
+                bubble.classList.add('bubble');
+                bubble.textContent = message;
+                wrapper.classList.add("server");
+            }
+            wrapper.appendChild(bubble);
+            document.getElementById('messages').appendChild(wrapper);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+        
+    </script>
+  </body>
+</html>

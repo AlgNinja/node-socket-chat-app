@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
+  },
+  "name": "socket-chat-app",
+  "version": "1.0.0",
+  "description": "a basic chat app that i will expand on with time",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "algninja",
+  "license": "ISC"
+}
